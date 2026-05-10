@@ -3,15 +3,12 @@ FROM golang:1.21-alpine AS builder
 
 WORKDIR /app
 
-# 安装依赖
-COPY go.mod go.sum ./
-RUN go mod download
-
 # 复制源码
 COPY . .
 
-# 编译
-RUN CGO_ENABLED=0 GOOS=linux go build \
+# 下载依赖并编译
+RUN go mod download && \
+    CGO_ENABLED=0 GOOS=linux go build \
     -ldflags="-w -s" \
     -o server ./cmd/server
 
