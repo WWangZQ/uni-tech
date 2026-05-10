@@ -88,7 +88,7 @@ func (h *Handler) PayOrder(c *gin.Context) {
 			})
 
 		if result.RowsAffected == 0 {
-			return errors.New("concurrent conflict, please retry")
+			return errors.New("CONCURRENT_CONFLICT", "并发冲突，请重试", http.StatusConflict)
 		}
 
 		return nil

@@ -165,12 +165,6 @@ func (h *Handler) CreateBooking(c *gin.Context) {
 		return
 	}
 
-	// 乐观锁更新时间槽
-	bufferMinutes := 5
-	if resource.Type == "academic" && resource.AcademicSpace != nil {
-		bufferMinutes = resource.AcademicSpace.BufferMinutes
-	}
-
 	result := h.db.Model(&slot).Where("id = ? AND version = ? AND status = ?", slot.ID, slot.Version, "available").
 		Updates(map[string]interface{}{
 			"status":     "booked",
@@ -182,11 +176,6 @@ func (h *Handler) CreateBooking(c *gin.Context) {
 		c.JSON(errors.ErrSlotConflict.HTTP, gin.H{"error": "slot was booked by another user"})
 		return
 	}
-
-	// 计算时长（分钟）
-	startTime, _ := time.Parse("15:04:05", slot.StartTime)
-	endTime, _ := time.Parse("15:04:05", slot.EndTime)
-	duration := int(endTime.Sub(startTime).Minutes())
 
 	// 计算到期时间（15分钟后）
 	paymentDeadline := time.Now().Add(15 * time.Minute)
