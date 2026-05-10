@@ -10,7 +10,7 @@ ENV GOPROXY=https://goproxy.cn,direct
 COPY . .
 
 # 下载依赖并编译
-RUN go mod download && \
+RUN go get ./... && \
     CGO_ENABLED=0 GOOS=linux go build \
     -ldflags="-w -s" \
     -o server ./cmd/server
