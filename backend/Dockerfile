@@ -11,8 +11,8 @@ ENV GOTOOLCHAIN=local
 # 复制源码
 COPY . .
 
-# 下载依赖并编译
-RUN go mod download && \
+# 下载依赖并编译（go get 生成 go.sum）
+RUN go get -d ./... && \
     CGO_ENABLED=0 GOOS=linux go build \
     -ldflags="-w -s" \
     -o server ./cmd/server
