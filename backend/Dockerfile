@@ -3,6 +3,9 @@ FROM golang:1.21-alpine AS builder
 
 WORKDIR /app
 
+# 使用国内 Go 代理
+ENV GOPROXY=https://goproxy.cn,direct
+
 # 复制源码
 COPY . .
 
