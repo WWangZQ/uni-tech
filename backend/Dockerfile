@@ -3,8 +3,9 @@ FROM golang:1.21-alpine AS builder
 
 WORKDIR /app
 
-# 使用国内 Go 代理
+# 使用国内 Go 代理，禁用 checksum 验证
 ENV GOPROXY=https://goproxy.cn,direct
+ENV GOSUMDB=off
 
 # 复制源码
 COPY . .
