@@ -3,15 +3,16 @@ FROM golang:1.21-alpine AS builder
 
 WORKDIR /app
 
-# 使用国内 Go 代理，禁用 checksum 验证
-ENV GOPROXY=https://goproxy.cn,direct
+# 使用国内 Go 代理，多代理回退
+ENV GOPROXY=https://goproxy.cn,https://proxy.golang.org,direct
 ENV GOSUMDB=off
+ENV GOTOOLCHAIN=local
 
 # 复制源码
 COPY . .
 
 # 下载依赖并编译
-RUN go get ./... && \
+RUN go mod download && \
     CGO_ENABLED=0 GOOS=linux go build \
     -ldflags="-w -s" \
     -o server ./cmd/server
